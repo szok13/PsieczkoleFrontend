@@ -1,0 +1,26 @@
+<div class="align-center">
+  <h2>User Login</h2>
+  <form (ngSubmit)="login()" #loginForm="ngForm">
+
+    <div>
+      <input placeholder="ID or Email" name="username" [(ngModel)]="username" required />
+    </div>
+
+    <div>
+      <input placeholder="Password" type="password" name="password" [(ngModel)]="password" required />
+    </div>
+
+    <div class="btn-div">
+      <button type="submit" [disabled]="loginForm.invalid" class="login-btn">
+        Login
+      </button>
+    </div>
+
+    <div class="login-extras">
+      <p><a routerLink="/register">Register here</a></p>
+      <p><a routerLink="/forgot-password">Forgot password?</a></p>
+    </div>
+
+    <p *ngIf="error" class="error-message">{{ error }}</p>
+  </form>
+</div>

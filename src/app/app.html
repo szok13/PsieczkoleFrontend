@@ -1,0 +1,22 @@
+<!-- <app-login></app-login> -->
+<nav class="main-nav"
+    style="padding: 1rem; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between;">
+    <div>
+        <a routerLink="/home" style="margin-right: 10px;">Home</a>
+    </div>
+
+    <div class="auth-status">
+        <ng-container *ngIf="authService.user$ | async as user; else guest">
+            <span style="margin-right: 10px;">Logged in as: <strong>{{ user.username }}</strong></span>
+            <button (click)="logout()">Logout</button>
+        </ng-container>
+
+        <ng-template #guest>
+            <a routerLink="/login">Login</a>
+        </ng-template>
+    </div>
+</nav>
+
+<main style="padding: 2rem;">
+    <router-outlet></router-outlet>
+</main>

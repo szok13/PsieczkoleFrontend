@@ -1,0 +1,93 @@
+.align-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 90vh;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form > div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+input {
+  margin: 10px 0;
+  padding: 10px;
+  width: 15rem;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.btn-div .login-btn {
+  width: 15rem;
+  padding: 10px;
+  font-size: 14px;
+  background: orange;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.3s;
+}
+
+.btn-div .login-btn:hover {
+  background: #e69500;
+}
+
+.btn-div .login-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.login-extras {
+  margin-top: 25px;      /* Space between the Login button and the links */
+  width: 15rem;
+  display: flex;         /* Use flex here to control spacing precisely */
+  flex-direction: column; 
+  gap: 12px;             /* This creates the exact gap between the lines */
+  text-align: center;
+}
+
+.login-extras p {
+  margin: 0;             /* Reset margins to let the 'gap' do the work */
+  padding: 0;
+}
+
+.login-extras a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;   /* Keeps "Forgot password?" on one line */
+  display: inline-block; 
+}
+
+.login-extras a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-top: 15px;
+  font-size: 0.85rem;
+  max-width: 15rem;
+  text-align: center;
+}
