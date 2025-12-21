@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, filter, Observable, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, catchError, filter, Observable, of, switchMap, take, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 export class AuthService {
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable();
+  private isLoadedSubject = new BehaviorSubject<boolean>(false);
+  isLoaded$ = this.isLoadedSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -51,6 +53,18 @@ export class AuthService {
           this.userSubject.next(null);
           this.router.navigate(['/login']);
         }
+      });
+  }
+
+  checkAuthStatus(): void {
+    this.http.get('http://localhost:8080/api/user/current', { withCredentials: true })
+      .pipe(
+        take(1),
+        catchError(() => of(null))
+      )
+      .subscribe(user => {
+        this.userSubject.next(user);
+        this.isLoadedSubject.next(true);
       });
   }
 }

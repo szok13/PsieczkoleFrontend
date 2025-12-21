@@ -18,6 +18,7 @@ export class App implements OnInit {
 
   ngOnInit() {
     this.authService.fetchCurrentUser();
+    this.authService.checkAuthStatus();
   }
   logout() {
     this.authService.logout();
