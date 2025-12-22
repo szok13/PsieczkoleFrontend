@@ -21,7 +21,7 @@ export class AuthService {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
-    return this.http.post('http://localhost:8080/api/login', body.toString(), {
+    return this.http.post('http://localhost:8080/api/auth/login', body.toString(), {
       headers,
       withCredentials: true
     }).pipe(
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   fetchCurrentUser(): void {
-    this.http.get('http://localhost:8080/api/user/current', { withCredentials: true })
+    this.http.get('http://localhost:8080/api/auth/user/current', { withCredentials: true })
       .subscribe({
         next: (user) => this.userSubject.next(user),
         error: () => this.userSubject.next(null)
@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   checkAuthStatus(): void {
-    this.http.get('http://localhost:8080/api/user/current', { withCredentials: true })
+    this.http.get('http://localhost:8080/api/auth/user/current', { withCredentials: true })
       .pipe(
         take(1),
         catchError(() => of(null))
