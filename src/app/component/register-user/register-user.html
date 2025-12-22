@@ -1,1 +1,52 @@
-<p>register-user works!</p>
+<div class="align-center">
+    <h2>Create Account</h2>
+
+    <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+
+        <div class="input-div">
+            <input type="text" name="firstName" [(ngModel)]="registerData.firstName" placeholder="First Name" required
+                #firstName="ngModel">
+        </div>
+
+        <div class="input-div">
+            <input type="text" name="lastName" [(ngModel)]="registerData.lastName" placeholder="Last Name" required
+                #lastName="ngModel">
+        </div>
+
+        <div class="input-div">
+            <input type="email" name="email" [(ngModel)]="registerData.email" placeholder="Email Address" required email
+                #email="ngModel">
+        </div>
+
+        <div class="input-div">
+            <input type="text" name="address" [(ngModel)]="registerData.address" placeholder="Home Address" required
+                #address="ngModel">
+        </div>
+
+        <div class="input-div">
+            <input type="password" name="password" [(ngModel)]="registerData.password"
+                placeholder="Password (min 6 chars)" required minlength="6" #pwd="ngModel">
+        </div>
+
+        <div class="input-div">
+            <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" placeholder="Confirm Password"
+                required>
+        </div>
+
+        <p class="warning-text" *ngIf="confirmPassword && registerData.password !== confirmPassword">
+            Passwords do not match!
+        </p>
+
+        <div class="btn-div">
+            <button type="submit" [disabled]="registerForm.invalid" class="login-btn">
+                Register
+            </button>
+        </div>
+
+        <p *ngIf="error" class="error-message">{{ error }}</p>
+
+        <div class="login-extras">
+            <p>Already have an account? <a routerLink="/login">Login here</a></p>
+        </div>
+    </form>
+</div>

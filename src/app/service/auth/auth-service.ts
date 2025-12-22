@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, catchError, filter, Observable, of, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, catchError, filter, Observable, of, switchMap, take, tap, timeout } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -28,7 +28,9 @@ export class AuthService {
       tap(() => this.fetchCurrentUser()),
       switchMap(() => this.user$.pipe(
         filter(user => user !== null),
-        take(1)
+        take(1),
+        timeout(5000),
+        catchError(() => of(null))
       ))
     );
   }

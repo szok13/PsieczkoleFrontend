@@ -1,0 +1,75 @@
+.align-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Takes full height of the browser */
+  background-color: #f4f7f6; /* Optional: light background */
+}
+
+.input-div input {
+  width: 15rem;      /* Your standard width */
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Crucial: includes padding in width */
+}
+
+.login-btn {
+  width: 15rem;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #d93025;
+  background-color: #fce8e6;
+  width: 15rem;
+  padding: 8px;
+  margin-top: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.warning-text {
+  color: #856404;
+  background-color: #fff3cd; /* Yellow alert style */
+  border: 1px solid #ffeeba;
+  width: 15rem;
+  padding: 5px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.login-extras {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+  text-align: center;
+}
+
+.login-extras a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap; /* Prevents "Login here" from splitting */
+}
+
+.login-extras a:hover {
+  text-decoration: underline;
+}
