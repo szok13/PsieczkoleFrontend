@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from './service/auth/auth-service';
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Home } from './component/home/home/home';
+import { Home } from './component/home/home';
 
 @Component({
   selector: 'app-root',
