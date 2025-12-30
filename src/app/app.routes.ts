@@ -5,6 +5,7 @@ import { authGuard } from './guard/auth/auth-guard';
 import { RegisterUser } from './component/register-user/register-user';
 import { ForgotPassword } from './component/forgot-password/forgot-password';
 import { guestGuard } from './guard/guest/guest-guard';
+import { PetManagement } from './component/pet-management/pet-management';
 
 export const routes: Routes = [
     {
@@ -28,9 +29,13 @@ export const routes: Routes = [
         canActivate: [guestGuard]
     },
     {
-        path: 'home',
-        component: Home,
+        path: 'pet-management',
+        component: PetManagement,
         canActivate: [authGuard]
+    },
+    {
+        path: 'home',
+        component: Home
     },
     {
         path: '**',

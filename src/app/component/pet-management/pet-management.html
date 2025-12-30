@@ -1,0 +1,98 @@
+<div class="container">
+    <div class="side-panel">
+        <div class="align-center">
+            <h2>Register Pet</h2>
+
+            <form (ngSubmit)="onRegisterPet()" #petForm="ngForm">
+
+                <div class="input-div">
+                    <input type="text" name="petName" [(ngModel)]="petData.petName" placeholder="Pet Name" required
+                        #petName="ngModel">
+                </div>
+
+                <div class="input-div">
+                    <input type="text" name="breed" [(ngModel)]="petData.breed" placeholder="Breed (Optional)">
+                </div>
+
+                <div class="input-div">
+                    <input type="text" name="color" [(ngModel)]="petData.color" placeholder="Color" required
+                        #color="ngModel">
+                </div>
+
+                <div class="input-div">
+                    <select name="species" [(ngModel)]="petData.species" required #species="ngModel">
+                        <option value="" disabled selected>Select Species</option>
+                        <option value="DOG">Dog</option>
+                        <option value="CAT">Cat</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+
+                <div class="input-div">
+                    <select name="size" [(ngModel)]="petData.size" required #size="ngModel">
+                        <option value="" disabled selected>Select Size</option>
+                        <option value="SMALL">Small</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LARGE">Large</option>
+                    </select>
+                </div>
+
+                <div class="input-div">
+                    <textarea name="additionalInfo" [(ngModel)]="petData.additionalInfo"
+                        placeholder="Additional Information" rows="4"></textarea>
+                </div>
+
+                <div class="btn-div">
+                    <button *ngIf="!isEditing" type="submit" [disabled]="petForm.invalid" class="login-btn">
+                        Register
+                    </button>
+
+                    <button *ngIf="isEditing" type="button" (click)="onUpdatePet()" [disabled]="petForm.invalid"
+                        class="login-btn update-btn">
+                        Update
+                    </button>
+
+                    <button *ngIf="isEditing" type="button" (click)="cancelEdit()" class="login-btn cancel-btn">
+                        Cancel
+                    </button>
+                </div>
+
+                <p *ngIf="error" class="error-message">{{ error }}</p>
+            </form>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <h2>Pet List</h2>
+
+        <div *ngIf="error" class="error-alert">
+            {{ error }}
+        </div>
+
+        <table class="pet-table" *ngIf="petList.length > 0; else noData">
+            <thead>
+                <tr>
+                    <th>Pet Name</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let pet of petList">
+                    <td>{{ pet.petName }}</td>
+                    <td>{{ pet.color }}</td>
+                    <td>{{ pet.size }}</td>
+                    <td>
+                        <button class="action-btn edit" (click)="onEdit(pet)">Edit</button>
+                        <button class="action-btn remove" (click)="onRemove(pet)">Remove</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <ng-template #noData>
+            <p *ngIf="!error">No pets found or loading data...</p>
+        </ng-template>
+    </div>
+</div>
