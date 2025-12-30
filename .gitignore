@@ -1,1 +1,10 @@
 
+# Dependency directories
+node_modules/
+
+# Angular cache
+.angular/
+
+# Build outputs
+dist/
+/target/
