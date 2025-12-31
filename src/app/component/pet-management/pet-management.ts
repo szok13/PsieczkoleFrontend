@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../service/auth/auth-service';
 
 interface Pet {
-  id?: number;
+  id: number;
   petName: string;
   breed?: string;
   color: string;
@@ -26,6 +26,7 @@ export class PetManagement {
   authService = inject(AuthService);
 
   petData: Pet = {
+    id: 0,
     petName: '',
     breed: '',
     color: '',
@@ -49,6 +50,7 @@ export class PetManagement {
         next: (savedPet) => {
           this.petList.push(savedPet);
           this.resetForm()
+          this.cd.detectChanges();
         },
         error: (err) => {
           this.error = 'Pet registration failed. Please try again.';
@@ -57,18 +59,20 @@ export class PetManagement {
   }
 
   onUpdatePet() {
+    const indexToUpdate = this.editIndex;
     if (this.editIndex !== null) {
       this.http.put<Pet>('http://localhost:8084/api/pet-management/update-pet', this.petData)
         .subscribe({
           next: () => {        
-            this.resetForm();
             this.isEditing = false;
+            this.petList[indexToUpdate!] = { ...this.petData };
+            this.cd.detectChanges();
+            setTimeout(() => this.resetForm());
           },
           error: (err) => {
             this.error = 'Pet data update failed. Please try again.';
           }
         });
-      this.petList[this.editIndex] = { ...this.petData };
     }
   }
 
@@ -87,7 +91,7 @@ export class PetManagement {
   onRemove(pet: Pet) {
     const index = this.petList.indexOf(pet);
     if (index > -1) {
-      this.http.delete<Pet>('http://localhost:8084/api/pet-management/delete-pet', { body: pet })
+      this.http.delete<void>(`http://localhost:8084/api/pet-management/delete-pet/${pet.id}`)
         .subscribe({
           next: () => {
             this.petList.splice(index, 1);
@@ -102,6 +106,7 @@ export class PetManagement {
 
   resetForm() {
     this.petData = {
+      id: 0,
       petName: '',
       breed: '',
       color: '',

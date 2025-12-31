@@ -72,6 +72,7 @@
         <table class="pet-table" *ngIf="petList.length > 0; else noData">
             <thead>
                 <tr>
+                    <th>Pet ID</th>
                     <th>Pet Name</th>
                     <th>Color</th>
                     <th>Size</th>
@@ -80,6 +81,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let pet of petList">
+                    <td>{{ pet.id }}</td>
                     <td>{{ pet.petName }}</td>
                     <td>{{ pet.color }}</td>
                     <td>{{ pet.size }}</td>
