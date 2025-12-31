@@ -7,66 +7,72 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly API_URL = 'http://localhost:8080/api/auth/';
+  private readonly TOKEN_KEY = 'auth-token';
+
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable();
+
   private isLoadedSubject = new BehaviorSubject<boolean>(false);
   isLoaded$ = this.isLoadedSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {
+    this.checkAuthStatus();
+  }
 
   login(credentials: any): Observable<any> {
-    const body = new HttpParams()
-      .set('username', credentials.username)
-      .set('password', credentials.password);
-
-    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-
-    return this.http.post('http://localhost:8080/api/auth/login', body.toString(), {
-      headers,
-      withCredentials: true
+    return this.http.post<any>(this.API_URL + 'login', {
+      username: credentials.username,
+      password: credentials.password
     }).pipe(
-      tap(() => this.fetchCurrentUser()),
-      switchMap(() => this.user$.pipe(
-        filter(user => user !== null),
-        take(1),
-        timeout(5000),
-        catchError(() => of(null))
-      ))
+      tap((response) => {
+        if (response && response.token) {
+          this.saveToken(response.token);
+          this.fetchCurrentUser();
+        }
+      }),
     );
   }
 
+  private saveToken(token: string): void {
+    window.localStorage.removeItem(this.TOKEN_KEY);
+    window.localStorage.setItem(this.TOKEN_KEY, token)
+  }
+
+  public getToken(): string | null {
+    return window.localStorage.getItem(this.TOKEN_KEY)
+  }
+
   fetchCurrentUser(): void {
-    this.http.get('http://localhost:8080/api/auth/user/current', { withCredentials: true })
-      .subscribe({
-        next: (user) => this.userSubject.next(user),
-        error: () => this.userSubject.next(null)
-      });
+    this.http.get(this.API_URL + 'user/current').subscribe({
+      next: (user) => {
+        this.userSubject.next(user);
+        this.isLoadedSubject.next(true); // Sukces - dane są, kończymy ładowanie
+      },
+      error: () => {
+        this.logout(); // Czyści token i ustawia isLoaded na true
+      }
+    });
   }
 
   logout(): void {
-    this.http.post('http://localhost:8080/logout', {}, { withCredentials: true })
-      .subscribe({
-        next: () => {
-          this.userSubject.next(null);
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          console.error('Logout failed', err);
-          this.userSubject.next(null);
-          this.router.navigate(['/login']);
-        }
-      });
+    window.localStorage.removeItem(this.TOKEN_KEY);
+    this.userSubject.next(null);
+    this.isLoadedSubject.next(true)
+    this.router.navigate(['login'])
   }
 
+  // auth-service.ts
+
   checkAuthStatus(): void {
-    this.http.get('http://localhost:8080/api/auth/user/current', { withCredentials: true })
-      .pipe(
-        take(1),
-        catchError(() => of(null))
-      )
-      .subscribe(user => {
-        this.userSubject.next(user);
-        this.isLoadedSubject.next(true);
-      });
+    const token = this.getToken();
+    if (token) {
+      // Jeśli jest token, isLoaded będzie true dopiero gdy serwer odpowie
+      this.fetchCurrentUser();
+    } else {
+      // Jeśli nie ma tokena, od razu mówimy, że załadowano (użytkownik jest gościem)
+      this.userSubject.next(null);
+      this.isLoadedSubject.next(true);
+    }
   }
 }

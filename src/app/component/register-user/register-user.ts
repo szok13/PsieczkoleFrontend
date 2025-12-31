@@ -18,11 +18,13 @@ export class RegisterUser {
     address: '',
     password: ''
   };
-  
+
   confirmPassword = '';
   error = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
+
+  private readonly AUTH_API = 'http://localhost:8080/api/auth/';
 
   onRegister() {
     if (this.registerData.password !== this.confirmPassword) {
@@ -30,11 +32,14 @@ export class RegisterUser {
       return;
     }
 
-    this.http.post('http://localhost:8080/api/auth/register', this.registerData)
+    this.http.post(this.AUTH_API + 'register', this.registerData)
       .subscribe({
-        next: () => this.router.navigate(['/login']),
+        next: () => {
+          console.log('Registration successful');
+          this.router.navigate(['/login']);
+        },
         error: (err) => {
-          this.error = 'Registration failed. Email might already be in use.';
+          this.error = err.error?.message || 'Registration failed. Email might already be in use.';
         }
       });
   }
