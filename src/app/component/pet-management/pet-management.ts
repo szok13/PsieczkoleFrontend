@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../service/auth/auth-service';
+import { environment } from '../../../environments/environment';
 
 interface Pet {
   id: number;
@@ -23,6 +24,8 @@ interface Pet {
 })
 
 export class PetManagement {
+  private readonly API = environment.petManagementApiUrl
+
   authService = inject(AuthService);
 
   petData: Pet = {
@@ -45,7 +48,7 @@ export class PetManagement {
   editIndex: number | null = null;
 
   onRegisterPet() {
-    this.http.post<Pet>('http://localhost:8084/api/pet-management/register-pet', this.petData)
+    this.http.post<Pet>(`${this.API}/api/pet-management/register-pet`, this.petData)
       .subscribe({
         next: (savedPet) => {
           this.petList.push(savedPet);
@@ -61,13 +64,13 @@ export class PetManagement {
   onUpdatePet() {
     const indexToUpdate = this.editIndex;
     if (this.editIndex !== null) {
-      this.http.put<Pet>('http://localhost:8084/api/pet-management/update-pet', this.petData)
+      this.http.put<Pet>(`${this.API}/api/pet-management/update-pet`, this.petData)
         .subscribe({
           next: () => {        
             this.isEditing = false;
             this.petList[indexToUpdate!] = { ...this.petData };
+            this.resetForm();
             this.cd.detectChanges();
-            setTimeout(() => this.resetForm());
           },
           error: (err) => {
             this.error = 'Pet data update failed. Please try again.';
@@ -87,11 +90,10 @@ export class PetManagement {
     this.petData = { ...pet };
   }
 
-  // Metoda usuwająca zwierzaka z listy
   onRemove(pet: Pet) {
     const index = this.petList.indexOf(pet);
     if (index > -1) {
-      this.http.delete<void>(`http://localhost:8084/api/pet-management/delete-pet/${pet.id}`)
+      this.http.delete<void>(`${this.API}/api/pet-management/delete-pet/${pet.id}`)
         .subscribe({
           next: () => {
             this.petList.splice(index, 1);
@@ -122,7 +124,7 @@ export class PetManagement {
   loadPetList(ownerId: string) {
     if (!ownerId) return;
 
-    this.http.get<Pet[]>('http://localhost:8084/api/pet-management/load-pets', {
+    this.http.get<Pet[]>(`${this.API}/api/pet-management/load-pets`, {
       params: { ownerId }
     })
       .subscribe({

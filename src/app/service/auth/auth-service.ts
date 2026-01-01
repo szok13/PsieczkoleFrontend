@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, catchError, filter, Observable, of, switchMap, take, tap, timeout } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/api/auth/';
+  private readonly AUTH_API = environment.authApiUrl;
   private readonly TOKEN_KEY = 'auth-token';
 
   private userSubject = new BehaviorSubject<any>(null);
@@ -21,7 +22,7 @@ export class AuthService {
   }
 
   login(credentials: any): Observable<any> {
-    return this.http.post<any>(this.API_URL + 'login', {
+    return this.http.post<any>(`${this.AUTH_API}/api/auth/login`, {
       username: credentials.username,
       password: credentials.password
     }).pipe(
@@ -44,13 +45,13 @@ export class AuthService {
   }
 
   fetchCurrentUser(): void {
-    this.http.get(this.API_URL + 'user/current').subscribe({
+    this.http.get(`${this.AUTH_API}/api/auth/user/current`).subscribe({
       next: (user) => {
         this.userSubject.next(user);
-        this.isLoadedSubject.next(true); // Sukces - dane są, kończymy ładowanie
+        this.isLoadedSubject.next(true);
       },
       error: () => {
-        this.logout(); // Czyści token i ustawia isLoaded na true
+        this.logout();
       }
     });
   }
@@ -62,15 +63,11 @@ export class AuthService {
     this.router.navigate(['login'])
   }
 
-  // auth-service.ts
-
   checkAuthStatus(): void {
     const token = this.getToken();
     if (token) {
-      // Jeśli jest token, isLoaded będzie true dopiero gdy serwer odpowie
       this.fetchCurrentUser();
     } else {
-      // Jeśli nie ma tokena, od razu mówimy, że załadowano (użytkownik jest gościem)
       this.userSubject.next(null);
       this.isLoadedSubject.next(true);
     }
