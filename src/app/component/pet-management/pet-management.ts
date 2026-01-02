@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../service/auth/auth-service';
 import { environment } from '../../../environments/environment';
+import { ConfigService } from '../../service/config/config-service';
 
 interface Pet {
   id: number;
@@ -24,7 +25,6 @@ interface Pet {
 })
 
 export class PetManagement {
-  private readonly API = environment.petManagementApiUrl
 
   authService = inject(AuthService);
 
@@ -39,7 +39,7 @@ export class PetManagement {
     ownerId: ''
   };
 
-  constructor(private http: HttpClient, private cd: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private cd: ChangeDetectorRef, private config: ConfigService) { }
 
   petList: Pet[] = [];
 
@@ -48,7 +48,7 @@ export class PetManagement {
   editIndex: number | null = null;
 
   onRegisterPet() {
-    this.http.post<Pet>(`${this.API}/api/pet-management/register-pet`, this.petData)
+    this.http.post<Pet>(`${this.config.petManagementApiUrl}/api/pet-management/register-pet`, this.petData)
       .subscribe({
         next: (savedPet) => {
           this.petList.push(savedPet);
@@ -64,7 +64,7 @@ export class PetManagement {
   onUpdatePet() {
     const indexToUpdate = this.editIndex;
     if (this.editIndex !== null) {
-      this.http.put<Pet>(`${this.API}/api/pet-management/update-pet`, this.petData)
+      this.http.put<Pet>(`${this.config.petManagementApiUrl}/api/pet-management/update-pet`, this.petData)
         .subscribe({
           next: () => {        
             this.isEditing = false;
@@ -93,7 +93,7 @@ export class PetManagement {
   onRemove(pet: Pet) {
     const index = this.petList.indexOf(pet);
     if (index > -1) {
-      this.http.delete<void>(`${this.API}/api/pet-management/delete-pet/${pet.id}`)
+      this.http.delete<void>(`${this.config.petManagementApiUrl}/api/pet-management/delete-pet/${pet.id}`)
         .subscribe({
           next: () => {
             this.petList.splice(index, 1);
@@ -124,7 +124,7 @@ export class PetManagement {
   loadPetList(ownerId: string) {
     if (!ownerId) return;
 
-    this.http.get<Pet[]>(`${this.API}/api/pet-management/load-pets`, {
+    this.http.get<Pet[]>(`${this.config.petManagementApiUrl}/api/pet-management/load-pets`, {
       params: { ownerId }
     })
       .subscribe({

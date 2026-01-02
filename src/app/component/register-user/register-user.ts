@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { ConfigService } from '../../service/config/config-service';
 
 @Component({
   selector: 'app-register-user',
@@ -23,9 +24,7 @@ export class RegisterUser {
   confirmPassword = '';
   error = '';
 
-  constructor(private http: HttpClient, private router: Router) { }
-
-  private readonly AUTH_API = environment.authApiUrl;
+  constructor(private http: HttpClient, private router: Router, private config: ConfigService) { }
 
   onRegister() {
     if (this.registerData.password !== this.confirmPassword) {
@@ -33,7 +32,7 @@ export class RegisterUser {
       return;
     }
 
-    this.http.post(`${this.AUTH_API}/api/auth/register`, this.registerData)
+    this.http.post(`${this.config.authApiUrl}/api/auth/register`, this.registerData)
       .subscribe({
         next: () => {
           console.log('Registration successful');
