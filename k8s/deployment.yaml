@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: psieczkole-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: psieczkole-frontend
+  template:
+    metadata:
+      labels:
+        app: psieczkole-frontend
+    spec:
+      containers:
+      - name: psieczkole-web
+        image: psieczkole-frontend:latest
+        imagePullPolicy: Never # Bardzo ważne dla obrazów lokalnych w Minikube!
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        # Montujemy plik z ConfigMapy bezpośrednio w miejscu, gdzie Nginx go szuka
+        - name: config-volume
+          mountPath: /usr/share/nginx/html/config.json
+          subPath: config.json
+      volumes:
+      - name: config-volume
+        configMap:
+          name: angular-config
